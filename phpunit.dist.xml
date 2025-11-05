@@ -8,7 +8,6 @@
          displayDetailsOnTestsThatTriggerErrors="true"
          displayDetailsOnTestsThatTriggerNotices="true"
          displayDetailsOnTestsThatTriggerWarnings="true"
-         beStrictAboutCoverage="true"
          beStrictAboutOutputDuringTests="true">
     <testsuites>
         <testsuite name="Domain">
@@ -22,7 +21,7 @@
         </testsuite>
     </testsuites>
 
-    <source ignoreIndirectDeprecations="true" restrictNotices="true" restrictWarnings="true">
+    <source>
         <include>
             <directory>src</directory>
         </include>
@@ -32,4 +31,11 @@
             <directory>vendor</directory>
         </exclude>
     </source>
+
+    <php>
+        <ini name="display_errors" value="1" />
+        <ini name="error_reporting" value="-1" />
+        <server name="APP_ENV" value="test" force="true" />
+        <server name="SHELL_VERBOSITY" value="-1" />
+    </php>
 </phpunit>

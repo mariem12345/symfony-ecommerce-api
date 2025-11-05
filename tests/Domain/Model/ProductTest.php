@@ -11,7 +11,6 @@ class ProductTest extends TestCase
     public function testCanCreateProductWithValidData(): void
     {
         $product = new Product(
-            '1', //id
             'Test Product', //name
             'Test description',  //description
             100.00, //price
