@@ -2,7 +2,8 @@
 
 namespace App\Tests\Application\UseCase;
 
-
+use App\Application\UseCase\ListProductsUseCase;
+use App\Application\DTO\ProductListDTO;
 use App\Domain\Model\Product;
 use App\Domain\Repository\ProductRepositoryInterface;
 use PHPUnit\Framework\TestCase;
