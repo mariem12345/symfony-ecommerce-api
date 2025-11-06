@@ -3,14 +3,29 @@
 namespace App\Domain\Model;
 
 use App\Domain\Exception\InvalidProductDataException;
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity]
+#[ORM\Table(name: 'products')]
 class Product
 {
+    #[ORM\Id]
+    #[ORM\Column(type: 'string', length: 255)]
     private string $id;
+
+    #[ORM\Column(type: 'string', length: 255)]
     private string $name;
+
+    #[ORM\Column(type: 'text')]
     private string $description;
+
+    #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
     private float $price;
+
+    #[ORM\Column(type: 'string', length: 100)]
     private string $category;
+
+    #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $createdAt;
 
     public function __construct(
@@ -49,6 +64,7 @@ class Product
         return round($this->price * (1 + $vatRate / 100), 2);
     }
 
+    // Getters
     public function getId(): string { return $this->id; }
     public function getName(): string { return $this->name; }
     public function getDescription(): string { return $this->description; }

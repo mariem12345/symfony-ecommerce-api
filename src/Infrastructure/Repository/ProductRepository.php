@@ -5,6 +5,7 @@ namespace App\Infrastructure\Repository;
 use App\Domain\Model\Product;
 use App\Domain\Repository\ProductRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
 
 class ProductRepository implements ProductRepositoryInterface
 {
