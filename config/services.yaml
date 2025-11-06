@@ -9,17 +9,18 @@ services:
             - '../src/Domain/Model/'
             - '../src/Kernel.php'
 
-    # Bind Repository Interface to Doctrine Implementation
-    App\Domain\Repository\ProductRepositoryInterface: '@App\Infrastructure\Repository\DoctrineProductRepository'
+    # Repository binding
+    App\Domain\Repository\ProductRepositoryInterface: '@App\Infrastructure\Repository\ProductRepository'
 
     # Use Cases
     App\Application\UseCase\CreateProductUseCase: ~
     App\Application\UseCase\ListProductsUseCase: ~
 
+    # Security
+    App\Infrastructure\Security\TokenUserProvider: ~
+    App\Infrastructure\Security\TokenAuthenticator: ~
+
     # Controllers
     App\Infrastructure\Controller\:
         resource: '../src/Infrastructure/Controller/'
         tags: ['controller.service_arguments']
-
-    # Repositories
-    App\Infrastructure\Repository\DoctrineProductRepository: ~
