@@ -45,6 +45,11 @@ class ProductControllerTest extends TestCase
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
+
+        $data = json_decode($response->getContent(), true);
+        $this->assertArrayHasKey('data', $data);
+        $this->assertArrayHasKey('price_without_vat', $data['data'][0]); // FIXED
+        $this->assertArrayHasKey('price_with_vat', $data['data'][0]); // FIXED
     }
 
     public function testCreateProductReturnsJsonResponse(): void
@@ -71,5 +76,10 @@ class ProductControllerTest extends TestCase
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(201, $response->getStatusCode());
+
+        $data = json_decode($response->getContent(), true);
+        $this->assertArrayHasKey('price_without_vat', $data); // FIXED
+        $this->assertArrayHasKey('price_with_vat', $data); // FIXED
+        $this->assertEquals(150.00, $data['price_without_vat']); // FIXED
     }
 }

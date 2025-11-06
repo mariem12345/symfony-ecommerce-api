@@ -55,14 +55,17 @@ class ProductController
         $result = $this->listProductsUseCase->execute($filters, $page, $limit);
 
         $data = [
-            'data' => array_map(fn($p) => [
-                'id' => $p->getId(),
-                'name' => $p->getName(),
-                'description' => $p->getDescription(),
-                'price' => $p->getPrice(),
-                'category' => $p->getCategory(),
-                'created_at' => $p->getCreatedAt()->format('Y-m-d H:i:s')
-            ], $result->products),
+            'data' => array_map(function ($product) {
+                return [
+                    'id' => $product->getId(),
+                    'name' => $product->getName(),
+                    'description' => $product->getDescription(),
+                    'price_without_vat' => $product->getPriceWithoutVat(),
+                    'price_with_vat' => $product->getAllVatPrices(), // Now using stored prices
+                    'category' => $product->getCategory(),
+                    'created_at' => $product->getCreatedAt()->format('Y-m-d H:i:s')
+                ];
+            }, $result->products),
             'pagination' => [
                 'total' => $result->total,
                 'page' => $result->page,
@@ -112,12 +115,8 @@ class ProductController
                 'id' => $product->getId(),
                 'name' => $product->getName(),
                 'description' => $product->getDescription(),
-                'price' => $product->getPrice(),
-                'price_with_vat' => [
-                    '4' => $product->calculatePriceWithVat(4),
-                    '10' => $product->calculatePriceWithVat(10),
-                    '21' => $product->calculatePriceWithVat(21)
-                ],
+                'price_without_vat' => $product->getPriceWithoutVat(),
+                'price_with_vat' => $product->getAllVatPrices(), // Now using stored prices
                 'category' => $product->getCategory(),
                 'created_at' => $product->getCreatedAt()->format('Y-m-d H:i:s')
             ];

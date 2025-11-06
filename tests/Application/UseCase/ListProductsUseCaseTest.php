@@ -41,5 +41,33 @@ class ListProductsUseCaseTest extends TestCase
         $this->assertInstanceOf(ProductListDTO::class, $result);
         $this->assertCount(2, $result->products);
         $this->assertEquals(2, $result->total);
+
+        // Verify the products have the correct prices
+        $this->assertEquals(100.00, $result->products[0]->getPriceWithoutVat()); // FIXED
+        $this->assertEquals(200.00, $result->products[1]->getPriceWithoutVat()); // FIXED
+    }
+
+    public function testListProductsWithEmptyFilters(): void
+    {
+        $products = [
+            new Product('Product 1', 'Desc 1', 100.00, 'electronics')
+        ];
+
+        $this->productRepository
+            ->method('findByCriteria')
+            ->with([], 1, 5)
+            ->willReturn($products);
+
+        $this->productRepository
+            ->method('countByCriteria')
+            ->with([])
+            ->willReturn(1);
+
+        $result = $this->useCase->execute([], 1, 5);
+
+        $this->assertInstanceOf(ProductListDTO::class, $result);
+        $this->assertCount(1, $result->products);
+        $this->assertEquals(1, $result->total);
+        $this->assertEquals(100.00, $result->products[0]->getPriceWithoutVat()); // FIXED
     }
 }

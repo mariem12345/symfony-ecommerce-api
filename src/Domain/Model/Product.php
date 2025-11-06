@@ -20,7 +20,16 @@ class Product
     private string $description;
 
     #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
-    private float $price;
+    private float $priceWithoutVat;
+
+    #[ORM\Column(name: 'price_with_vat4', type: 'decimal', precision: 10, scale: 2)]
+    private float $priceWithVat4;
+
+    #[ORM\Column(name: 'price_with_vat10', type: 'decimal', precision: 10, scale: 2)]
+    private float $priceWithVat10;
+
+    #[ORM\Column(name: 'price_with_vat21', type: 'decimal', precision: 10, scale: 2)]
+    private float $priceWithVat21;
 
     #[ORM\Column(type: 'string', length: 100)]
     private string $category;
@@ -31,17 +40,22 @@ class Product
     public function __construct(
         string $name,
         string $description,
-        float $price,
+        float $priceWithoutVat,
         string $category
     ) {
-        $this->validate($name, $price);
+        $this->validate($name, $priceWithoutVat);
 
         $this->id = uniqid('prod_', true);
         $this->name = $name;
         $this->description = $description;
-        $this->price = $price;
+        $this->priceWithoutVat = $priceWithoutVat;
         $this->category = $category;
         $this->createdAt = new \DateTimeImmutable();
+
+        // Calculate and store all VAT prices
+        $this->priceWithVat4 = $this->calculatePriceWithVat($priceWithoutVat, 4);
+        $this->priceWithVat10 = $this->calculatePriceWithVat($priceWithoutVat, 10);
+        $this->priceWithVat21 = $this->calculatePriceWithVat($priceWithoutVat, 21);
     }
 
     private function validate(string $name, float $price): void
@@ -55,20 +69,33 @@ class Product
         }
     }
 
-    public function calculatePriceWithVat(int $vatRate): float
+    private function calculatePriceWithVat(float $price, int $vatRate): float
     {
         if ($vatRate < 0 || $vatRate > 100) {
             throw new InvalidProductDataException('VAT rate must be between 0 and 100');
         }
 
-        return round($this->price * (1 + $vatRate / 100), 2);
+        return round($price * (1 + $vatRate / 100), 2);
     }
 
     // Getters
     public function getId(): string { return $this->id; }
     public function getName(): string { return $this->name; }
     public function getDescription(): string { return $this->description; }
-    public function getPrice(): float { return $this->price; }
+    public function getPriceWithoutVat(): float { return $this->priceWithoutVat; }
+    public function getPriceWithVat4(): float { return $this->priceWithVat4; }
+    public function getPriceWithVat10(): float { return $this->priceWithVat10; }
+    public function getPriceWithVat21(): float { return $this->priceWithVat21; }
     public function getCategory(): string { return $this->category; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+
+    // Helper method to get all VAT prices
+    public function getAllVatPrices(): array
+    {
+        return [
+            '4' => $this->priceWithVat4,
+            '10' => $this->priceWithVat10,
+            '21' => $this->priceWithVat21
+        ];
+    }
 }
