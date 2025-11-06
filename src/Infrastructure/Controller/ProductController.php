@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api/products')]
 class ProductController
@@ -55,9 +56,17 @@ class ProductController
     }
 
     #[Route('', name: 'products_create', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function create(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
+
+        // Validate required fields
+        if (!isset($data['name']) || !isset($data['description']) || !isset($data['price']) || !isset($data['category'])) {
+            return new JsonResponse([
+                'error' => 'Missing required fields: name, description, price, category'
+            ], Response::HTTP_BAD_REQUEST);
+        }
 
         try {
             $dto = new CreateProductDTO(
