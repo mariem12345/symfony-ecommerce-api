@@ -17,6 +17,8 @@ class TokenAuthenticator extends AbstractAuthenticator
 {
     public function supports(Request $request): ?bool
     {
+        // Only authenticate if Authorization header is present
+        // This allows public endpoints to work without authentication
         return $request->headers->has('Authorization');
     }
 
@@ -28,7 +30,6 @@ class TokenAuthenticator extends AbstractAuthenticator
             throw new CustomUserMessageAuthenticationException('No API token provided');
         }
 
-        // Remove "Bearer " prefix
         $apiToken = str_replace('Bearer ', '', $apiToken);
 
         if (empty($apiToken)) {
