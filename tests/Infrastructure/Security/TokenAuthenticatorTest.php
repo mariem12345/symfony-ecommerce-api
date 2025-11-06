@@ -2,6 +2,7 @@
 
 namespace App\Tests\Infrastructure\Security;
 
+use App\Infrastructure\Security\TokenAuthenticator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
